@@ -1,652 +1,12 @@
-// import React, { useState, useEffect } from 'react';
-// import { Box, Typography, Card, CardContent, Chip, IconButton, Checkbox, Button, GlobalStyles, Divider,Grid,Avatar} from '@mui/material';
-// import styled from '@emotion/styled';
-// import { InlineMath } from 'react-katex';
-// import 'katex/dist/katex.min.css';
-// import { Add, Delete,  Edit,  Quiz,  School as SchoolIcon,Book as BookIcon,Topic as TopicIcon, Schedule as ScheduleIcon,Star as StarIcon} from '@mui/icons-material';
-// import SolutionForm from '../QuestionDialogBox/SolutionForm';
-// import { useNavigate } from 'react-router-dom';
-
-// const katexStyles = {
-//   inlineMath: {
-//     margin: '0',
-//     padding: '0',
-//     display: 'inline',
-//     verticalAlign: 'baseline'
-//   },
-//   blockMath: {
-//     margin: '0.2em 0',
-//     padding: '0',
-//     textAlign: 'left'
-//   }
-// };
-// const katexGlobalStyles = (
-//   <GlobalStyles
-//     styles={{
-//       '.katex': {
-//         fontSize: 'inherit !important',
-//         lineHeight: 'inherit !important',
-//       },
-//       '.katex-display': {
-//         margin: '0.2em 0 !important',
-//         textAlign: 'left !important',
-//       },
-//       '.katex-display > .katex': {
-//         display: 'inline !important',
-//         textAlign: 'left !important',
-//       },
-//       '.katex .base': {
-//         display: 'inline !important',
-//       },
-//       '.katex .strut': {
-//         display: 'inline !important',
-//       },
-//     }}
-//   />
-// );
-// const QuestionCard = styled(Box)(({ theme }) => ({
-//   marginBottom: theme.spacing(2.5),
-//   border: `1px solid ${theme.palette.grey[200]}`,
-//   borderRadius: '12px',
-//   backgroundColor: '#ffffff',
-//   '&:hover': {
-//     backgroundColor: '#f8f9fa',
-//   },
-// }));
-// const QuestionsContainer = styled(Box)(({ theme }) => ({
-//   height: '100vh',
-//   overflow: 'auto',
-//   padding: theme.spacing(1),
-//   '&::-webkit-scrollbar': {
-//     width: '8px',
-//   },
-//   '&::-webkit-scrollbar-track': {
-//     backgroundColor: theme.palette.grey[50],
-//     borderRadius: '4px',
-//   },
-//   '&::-webkit-scrollbar-thumb': {
-//     backgroundColor: theme.palette.grey[300],
-//     borderRadius: '4px',
-//     '&:hover': {
-//       backgroundColor: theme.palette.grey[400],
-//     },
-//   },
-// }));
-
-// const CenteredContainer = styled(Box)({
-//   display: 'flex',
-//   flexDirection: 'column',
-//   alignItems: 'center',
-//   justifyContent: 'center',
-//   height: '300px',
-//   padding: '20px',
-// });
-
-// const SectionHeading = styled(Typography)(({ theme }) => ({
-//   color: theme.palette.grey[600],
-//   fontWeight: 500,
-//   fontSize: '0.875rem',
-//   marginBottom: theme.spacing(0.5),
-//   textTransform: 'uppercase',
-//   letterSpacing: '0.5px',
-// }));
-
-// const QuestionSection = styled(Box)({
-//   display: 'flex',
-//   flexDirection: 'column',
-//   padding: '16px',
-// });
-// const SolutionSection = styled(Box)({
-//   display: 'flex',
-//   flexDirection: 'column',
-//   padding: '16px',
-// });
-
-// const HorizontalDivider = styled(Divider)({
-//   margin: '16px 0',
-// });
-
-// const SolutionStep = styled(Box)(({ theme }) => ({
-//   padding: theme.spacing(0.5),
-// }));
-
-// const AddSolutionButton = styled(Button)(({ theme }) => ({
-//   padding: theme.spacing(2, 3),
-//   borderRadius: '8px',
-//   border: `2px dashed ${theme.palette.grey[300]}`,
-//   backgroundColor: 'transparent',
-//   color: theme.palette.grey[600],
-//   textTransform: 'none',
-//   fontSize: '0.95rem',
-//   fontWeight: 500,
-//   '&:hover': {
-//     backgroundColor: theme.palette.grey[50],
-//     borderColor: theme.palette.primary.main,
-//     color: theme.palette.primary.main,
-//   },
-// }));
-
-// const renderTextWithLatex = (text) => {
-//   if (!text) return text;
-
-//   const textStr = String(text);
-
-//   // Match $$...$$ (block), $...$ (inline), and \(...\) (inline)
-//   const latexBlockPattern = /\$\$(.*?)\$\$/g;
-//   const latexInlinePattern = /(?<!\$)\$(?!\$)(.*?)(?<!\$)\$(?!\$)/g;
-//   const latexParenPattern = /\\\((.*?)\\\)/g;  // <-- new
-
-//   // Replace LaTeX with rendered KaTeX components
-//   const parts = [];
-//   let lastIndex = 0;
-
-//   function pushText(text, idx) {
-//     if (text) {
-//       parts.push(<span key={`text-${idx}`}>{text}</span>);
-//     }
-//   }
-
-//   const matches = [...textStr.matchAll(latexBlockPattern), ...textStr.matchAll(latexInlinePattern), ...textStr.matchAll(latexParenPattern)]
-//     .sort((a, b) => a.index - b.index);
-
-//   matches.forEach((match, i) => {
-//     if (match.index > lastIndex) {
-//       pushText(textStr.substring(lastIndex, match.index), i + "-txt");
-//     }
-
-//     const mathContent = match[1]?.trim();
-//     if (mathContent) {
-//       parts.push(
-//         <InlineMath key={`math-${i}`} math={mathContent} />
-//       );
-//     }
-
-//     lastIndex = match.index + match[0].length;
-//   });
-
-//   if (lastIndex < textStr.length) {
-//     pushText(textStr.substring(lastIndex), "end");
-//   }
-
-//   return <span style={{ display: "inline", lineHeight: "inherit" }}>{parts}</span>;
-// };
-
-
-// export const QuestionsDisplay = ({
-//   questions,
-//   loading,
-//   onEditQuestion,
-//   onDeleteSolution,
-//   onDeleteQuestion,
-//   isImporting,
-//   solution,
-  
-// }) => {
-//   const [showSolutionForm,setShowSolutionForm] = useState(false);
-//   const navigate = useNavigate();
-
-//   console.log(questions)
-
-//   const renderQuestionContent = (question) => {
-//     switch (question.type) {
-//       case 'mcq':
-//         return (
-//           <Box sx={{ mb: 2 }}>
-//             {question.options?.map((option, idx) => (
-//               <Box 
-//                 key={option._id || idx} 
-//                 sx={{ 
-//                   display: 'flex', 
-//                   alignItems: 'center', 
-//                   p: 1,
-//                   mb: 1,
-//                   borderRadius: 1,
-//                   backgroundColor: 'grey.50',
-//                   border: '1px solid',
-//                   borderColor: 'grey.300',
-//                 }}
-//               >
-//                 <Typography 
-//                   variant="body2" 
-//                   sx={{ 
-//                     fontWeight: option.isCorrect ? 600 : 400,
-//                     color: option.isCorrect ? 'success.dark' : 'text.primary',
-//                     flex: 1
-//                   }}
-//                 >
-//                   {String.fromCharCode(65 + idx)}. {renderTextWithLatex(stripHtml(option.text))}
-//                   {option.isCorrect && ' ✓'}
-//                 </Typography>
-//                 {Array.isArray(option.optionUrl) && option.optionUrl.length > 0 && (
-//   <Box sx={{ ml: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-//     {option.optionUrl.map((url, idx) => (
-//       <img
-//         key={idx}
-//         src={url}
-//         alt={`Option ${String.fromCharCode(65 + idx)} - ${idx + 1}`}
-//         style={{
-//           maxWidth: '200px',
-//           height: 'auto',
-//           borderRadius: '4px',
-//           border: '1px solid #e0e0e0'
-//         }}
-//       />
-//     ))}
-//   </Box>
-// )}
-
-//               </Box>
-//             ))}
-//           </Box>
-//         );
-//       case 'truefalse':
-//         return (
-//           <Box sx={{ mb: 2 }}>
-//             <Box>
-//               <Box sx={{ 
-//                 p: 1.5, 
-//                 borderRadius: 1,
-//                 backgroundColor: 'grey.50',
-//                 border: '1px solid',
-//                 borderColor: 'grey.300',
-//                 mb: 1
-//               }}>
-//                 <Typography 
-//                   variant="body2" 
-//                   sx={{ 
-//                     fontWeight: question.correctAnswer === true ? 600 : 400,
-//                     color: question.correctAnswer === true ? 'success.dark' : 'text.primary'
-//                   }}
-//                 >
-//                   True {question.correctAnswer === true && '✓'}
-//                 </Typography>
-//               </Box>
-//               <Box sx={{ 
-//                 p: 1.5, 
-//                 borderRadius: 1,
-//                 backgroundColor: question.correctAnswer === false ? 'success.light' : 'grey.50',
-//                 border: question.correctAnswer === false ? '2px solid' : '1px solid',
-//                 borderColor: question.correctAnswer === false ? 'success.main' : 'grey.300'
-//               }}>
-//                 <Typography 
-//                   variant="body2" 
-//                   sx={{ 
-//                     fontWeight: question.correctAnswer === false ? 600 : 400,
-//                     color: question.correctAnswer === false ? 'success.dark' : 'text.primary'
-//                   }}
-//                 >
-//                   False {question.correctAnswer === false && '✓'}
-//                 </Typography>
-//               </Box>
-//             </Box>
-//           </Box>
-//         );
-//       case 'integerType':
-//         return (
-//           <Box sx={{ mb: 2 }}>
-//             <Box sx={{ 
-//               p: 1.5, 
-//               borderRadius: 1,
-//               backgroundColor: 'grey.50',
-//               border: '1px solid',
-//               borderColor: 'grey.300'
-//             }}>
-//               <Typography 
-//                 variant="body2" 
-//                 sx={{ 
-//                   fontWeight: 600,
-//                   color: 'success.dark'
-//                 }}
-//               >
-//                 Answer: {renderTextWithLatex(String(stripHtml(question.correctAnswer)))} 
-//               </Typography>
-//             </Box>
-//           </Box>
-//         );
-//       case 'fillintheblank':
-//         return (
-//           <Box sx={{ mb: 2 }}>
-//             <Typography variant="body2" sx={{ mb: 1, ml: 1, fontWeight: 500 }}>
-//               Answer(s):
-//             </Typography>
-//             {question.blanks?.map((blank, idx) => (
-//               <Box 
-//                 key={blank._id || idx}
-//                 sx={{ p: 1.5, borderRadius: 1,backgroundColor: 'grey.50',border: '1px solid',borderColor: 'grey.300',mr: 1,mb: 1}}
-//               >
-//                 <Typography 
-//                   variant="body2" 
-//                   sx={{ 
-//                     fontWeight: 600,
-//                     color: 'success.dark'
-//                   }}
-//                 >
-//                  {renderTextWithLatex(stripHtml(blank.correctAnswer))} 
-//                 </Typography>
-//               </Box>
-//             ))}
-//           </Box>
-//         );
-//       case 'comprehension':
-//         return (
-//           <Box sx={{ mb: 2 }}>
-//             {question.passage && (
-//               <Box sx={{ 
-//                 p: 2, 
-//                 backgroundColor: 'grey.50', 
-//                 borderRadius: 1, 
-//                 mb: 2,
-//                 border: '1px solid',
-//                 borderColor: 'grey.300'
-//               }}>
-//                 <Typography variant="body2" sx={{ fontStyle: 'italic', mb: 1, fontWeight: 500 }}>
-//                   Passage:
-//                 </Typography>
-//                 <Typography variant="body2" sx={{ lineHeight: 1.6 }}>
-//                   {renderTextWithLatex(stripHtml(question.passage))}
-//                 </Typography>
-//               </Box>
-//             )}
-//             {question.subQuestions?.map((subQ, idx) => (
-//               <Box key={subQ._id || idx} sx={{ mb: 2, pl: 2, borderLeft: '3px solid', borderColor: 'primary.main' }}>
-//                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-//                   Sub-question {idx + 1}: {renderTextWithLatex(stripHtml(subQ.questionText))}
-//                 </Typography>
-//                 {subQ.type === 'mcq' && subQ.options?.map((option, optIdx) => (
-//                   <Box 
-//                     key={option._id || optIdx} 
-//                     sx={{ display: 'flex', alignItems: 'center', p: 0.5,mb: 0.5,borderRadius: 0.5,backgroundColor: option.isCorrect ? 'success.light' : 'transparent', ml: 1
-//                     }}
-//                   >
-//                     <Typography 
-//                       variant="caption" 
-//                       sx={{ 
-//                         fontWeight: option.isCorrect ? 600 : 400,
-//                         color: option.isCorrect ? 'success.dark' : 'text.secondary'
-//                       }}
-//                     >
-//                       {String.fromCharCode(65 + optIdx)}. {renderTextWithLatex(stripHtml(option.text))}
-//                       {option.isCorrect && ' ✓'}
-//                     </Typography>
-//                   </Box>
-//                 ))}
-//               </Box>
-//             ))}
-//           </Box>
-//         );
-      
-//       default:
-//         return null;
-//     }
-//   };
-
-//   const renderSolutionContent = (question) => {
-//     const hasStringSolution = question.solution && typeof question.solution === 'string' && question.solution.trim().length > 0;
-//     const hasStepsSolution = solution && solution.steps && solution.steps.length > 0;
-//     if (hasStringSolution || hasStepsSolution) {
-//       return (
-//         <Box>
-//           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-//             <SectionHeading>Solution</SectionHeading>
-//             {!isImporting && (
-//               <Box sx={{ display: 'flex', gap: 1 }}>
-//                 <IconButton
-//                   size="small"
-//                   color="primary"
-//                   onClick={()=>navigate(`/solution/${question._id}`)}
-//                   title="Edit Solution"
-//                 >
-//                   <Edit fontSize="small" />
-//                 </IconButton>
-//                 <IconButton
-//                   size="small"
-//                   color="error"
-//                   onClick={() => onDeleteSolution({ solution: question.solution, question })}
-//                   title="Delete Solution"
-//                 >
-//                   <Delete fontSize="small" />
-//                 </IconButton>
-//               </Box>
-//             )}
-//           </Box>
-//           <Box sx={{ mt: 1 }}>
-//             {hasStringSolution ? (
-//               question.solution.split('\n').map((line, index) => {
-//                 const trimmedLine = line.trim();
-//                 if (!trimmedLine) return null; // Skip empty lines
-//                 return (
-//                   <SolutionStep key={index}>
-//                     <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
-//                       <Typography variant="body1" sx={{ color: '#333', lineHeight: 1.6, flex: 1 }}>
-//                         {renderTextWithLatex(stripHtml(trimmedLine))}
-//                       </Typography>
-//                     </Box>
-//                   </SolutionStep>
-//                 );
-//               })
-//             ) : (
-//               solution.steps.map((step, index) => (
-//                 <SolutionStep key={index}>
-//                   <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
-//                     <Typography variant="body1" sx={{ color: '#333', lineHeight: 1.6, flex: 1 }}>
-//                       {renderTextWithLatex(stripHtml(step))}
-//                     </Typography>
-//                   </Box>
-//                 </SolutionStep>
-//               ))
-//             )}
-//           </Box>
-//         </Box>
-//       );
-//     } else {
-//       return (
-//         <Box>
-//           <SectionHeading>Solution</SectionHeading>
-//           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center',  py: 4}}>
-//             {!isImporting ? (
-//               <AddSolutionButton
-//                 startIcon={<Add />}
-//                 onClick={()=>navigate(`/solution/${question._id}`)}
-//                 fullWidth
-//               >
-//                 Add Solution
-//               </AddSolutionButton>
-//             ) : (
-//               <Typography variant="body2" color="textSecondary" sx={{ fontStyle: 'italic' }}>
-//                 No solution available
-//               </Typography>
-//             )}
-//           </Box>
-//         </Box>
-//       );
-//     }
-//   };
-
-//   const handleEditClick = (question) => {
-//     if (onEditQuestion) {
-//       onEditQuestion(question);
-//     }
-//   };
-
-//   const handleDeleteClick = (question) => {
-//     if (onDeleteQuestion) {
-//       onDeleteQuestion(question);
-//     }
-//   };
-
-//   if (loading) {
-//     return (
-//       <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-//         <Typography color="textSecondary">Loading questions...</Typography>
-//       </Box>
-//     );
-//   }
-
-//   if (!questions || questions.length === 0) {
-//     return (
-//       <CenteredContainer>
-//         <Quiz sx={{ fontSize: 80, color: 'text.disabled', mb: 3 }} />
-//         <Typography variant="h5" color="textSecondary" sx={{ mb: 1, fontWeight: 600 }}>
-//           No questions found
-//         </Typography>
-//         <Typography variant="body1" color="textSecondary" sx={{ textAlign: 'center' }}>
-//           Start by adding questions using the buttons above
-//         </Typography>
-//       </CenteredContainer>
-//     );
-//   }
-
-// const stripHtml = (html) => {
-//   if (html == null) return "";
-//   const str = String(html);
-//   return str.replace(/<\/?[^>]+(>|$)/g, "").trim();
-// };
-
-
-
-//   return (
-//     <Box>
-//       {katexGlobalStyles}
-//       <QuestionsContainer>
-//         {questions.map((question, index) => (
-//           <QuestionCard key={question._id} variant="outlined">
-//             <CardContent sx={{ padding: 0, display: 'flex', flexDirection: 'column', overflow: 'visible' }}>
-//               <QuestionSection>
-//                 <Box sx={{ flexGrow: 1 }}>
-//                   <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 2 }}>
-//                     <Box sx={{ flex: 1, mr: 2 }}>
-//                       <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
-//                         <Box sx={{ fontSize: '0.9rem', color: 'grey.600', fontWeight: 600, mr: 1 }}>
-//                           Q{question.number || index + 1}:
-//                         </Box>
-//                         <Box sx={{ fontSize: '1.1rem', fontWeight: 600, color: 'black', position: 'relative', top: '-3px' }}>
-//                           {renderTextWithLatex(stripHtml(question.questionText))}
-
-//                         </Box>
-//                       </Box>
-//                       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
-//                         <Chip label={`Marks: ${question.marks || 0}`} size="small" color="success" variant="outlined" />
-//                         {question.negativeMarking && (
-//                           <Chip label={`-${question.negativeMarksValue || 0}`} size="small" color="error" variant="outlined" />
-//                         )}
-//                         <Chip 
-//                           icon={<StarIcon />}
-//                           label={question.difficultyLevel || 'Unknown'} 
-//                           size="small" 
-//                           color={question.difficultyLevel === 'easy' ? 'success' : question.difficultyLevel === 'medium' ? 'warning' : 'error'}
-//                           variant="filled"
-//                         />
-//                       </Box>
-//                     </Box>
-//                     {!isImporting && (
-//                       <Box sx={{ display: 'flex', gap: 1, ml: 2 }}>
-//                         <IconButton size="small" color="primary" onClick={() => handleEditClick(question)}>
-//                           <Edit fontSize="small" />
-//                         </IconButton>
-//                         <IconButton size="small" color="error" onClick={() => handleDeleteClick(question)}>
-//                           <Delete fontSize="small" />
-//                         </IconButton>
-//                       </Box>
-//                     )}
-//                   </Box>
-//                   {Array.isArray(question.questionUrl) && question.questionUrl.length > 0 && (
-//   <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-//     {question.questionUrl.map((url, idx) => (
-//       <img
-//         key={idx}
-//         src={url}
-//         alt={`Question Image ${idx + 1}`}
-//         style={{
-//           maxWidth: '60%',
-//           height: 'auto',
-//           borderRadius: '8px',
-//           border: '1px solid #e0e0e0'
-//         }}
-//       />
-//     ))}
-//   </Box>
-// )}
-
-//                   {renderQuestionContent(question)}
-//                 </Box>
-//                 <Grid container spacing={1} sx={{ mb: 2, mt: 12 }}>
-//                   <Grid item xs={12} sm={4}>
-//                     <Typography variant="caption" color="text.secondary">
-//                       <SchoolIcon sx={{ fontSize: 12, mr: 0.5 }} />
-//                       <strong>Class:</strong> {question.class?.class || 'N/A'}
-//                     </Typography>
-//                   </Grid>
-//                   <Grid item xs={12} sm={4}>
-//                     <Typography variant="caption" color="text.secondary">
-//                       <BookIcon sx={{ fontSize: 12, mr: 0.5 }} />
-//                       <strong>Course:</strong> {question.course?.course || 'N/A'}
-//                     </Typography>
-//                   </Grid>
-//                   <Grid item xs={12} sm={4}>
-//                     <Typography variant="caption" color="text.secondary">
-//                       <strong>Subject:</strong> {question.subject?.subject || 'N/A'}
-//                     </Typography>
-//                   </Grid>
-//                   <Grid item xs={12} sm={4}>
-//                     <Typography variant="caption" color="text.secondary">
-//                       <strong>Chapter:</strong> {question.chapterName?.chapterName || 'N/A'}
-//                     </Typography>
-//                   </Grid>
-//                   <Grid item xs={12} sm={4}>
-//                     <Typography variant="caption" color="text.secondary">
-//                       <TopicIcon sx={{ fontSize: 12, mr: 0.5 }} />
-//                       <strong>Topic:</strong> {question.topic?.topic || 'N/A'}
-//                     </Typography>
-//                   </Grid>
-//                   <Grid item xs={12} sm={4}>
-//                     <Typography variant="caption" color="text.secondary">
-//                       <strong>Resource:</strong> {question.resource || 'N/A'}
-//                     </Typography>
-//                   </Grid>
-//                 </Grid>
-//                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center', mb: 2 }}>
-//                   {question.previousYearsQuestion && (
-//                     <Typography variant="caption" sx={{ color: 'grey.600', fontWeight: 500 }}>
-//                       Previous Years Question
-//                     </Typography>
-//                   )}
-//                   {question.year && (
-//                     <Typography variant="caption" sx={{ color: 'grey.600', fontWeight: 500 }}>
-//                       Year: {question.year}
-//                     </Typography>
-//                   )}
-//                   {question.titles?.map((title, idx) => (
-//                     <Typography key={idx} variant="caption" sx={{ color: 'grey.600', fontWeight: 500 }}>
-//                       {title}
-//                     </Typography>
-//                   ))}
-//                 </Box>
-//               </QuestionSection>
-//               <HorizontalDivider />
-//               <SolutionSection>
-//                 {renderSolutionContent(question)}
-//               </SolutionSection>
-
-//             </CardContent>
-//           </QuestionCard>
-//         ))}
-//       </QuestionsContainer>
-//       {showSolutionForm && <SolutionForm questionId={questions._id} questionText= {questions.questionText} onCancel={()=>setShowSolutionForm(false)} isEditing={false}/>}
-//     </Box>
-//   );
-// };
-
-// export default QuestionsDisplay;
 
 import React, { useState } from 'react';
 import { Box, Typography, Card, CardContent, Chip, IconButton, Button, GlobalStyles, Divider, Grid, Avatar } from '@mui/material';
 import styled from '@emotion/styled';
-import { InlineMath } from 'react-katex';
+import katex from "katex"
 import 'katex/dist/katex.min.css';
 import { Add, Delete, Edit, Quiz, School as SchoolIcon, Book as BookIcon, Topic as TopicIcon, Schedule as ScheduleIcon, Star as StarIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { BASE_URL } from 'app/config/config';
-import { useEffect } from 'react';
+
 
 const katexGlobalStyles = (
   <GlobalStyles
@@ -756,30 +116,67 @@ const AddSolutionButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-// Renders text with inline LaTeX
-export const renderTextWithLatex = (text) => {
-  if (!text) return null;
+export const renderTextWithLatex = (html) => {
+  if (!html) return null;
+  let processed = html;
 
-  // remove \mathrm{...} but keep inner text
-  let clean = text.replace(/\\mathrm\{([^}]*)\}/g, "$1");
-
-  const parts = clean.split(/(\$[^$]+\$)/g);
-
-  return parts.map((part, index) => {
-    if (part.startsWith("$") && part.endsWith("$")) {
-      const math = part.slice(1, -1);
-      return <InlineMath key={index} math={math} />;
+  // Handle <span class="math-tex"> ... </span>
+  processed = processed.replace(/<span[^>]*class=["']math-tex["'][^>]*>(.*?)<\/span>/g, (match, math) => {
+    try {
+      // remove escaped backslashes \\( ... \\)
+      const cleanMath = math.replace(/^\\\(|\\\)$/g, "").replace(/^\\\[|\\\]$/g, "");
+      return katex.renderToString(cleanMath, { displayMode: false, throwOnError: false });
+    } catch (e) {
+      console.error("KaTeX error in span:", e);
+      return match;
     }
-    return <span key={index}>{part}</span>;
   });
+
+  // Handle display math $$...$$
+  processed = processed.replace(/\$\$(.*?)\$\$/gs, (match, math) => {
+    try {
+      return katex.renderToString(math, { displayMode: true, throwOnError: false });
+    } catch (e) {
+      console.error("KaTeX error in $$:", e);
+      return match;
+    }
+  });
+
+  // Handle inline math $...$
+  processed = processed.replace(/\$(.*?)\$/g, (match, math) => {
+    try {
+      return katex.renderToString(math, { displayMode: false, throwOnError: false });
+    } catch (e) {
+      console.error("KaTeX error in $:", e);
+      return match;
+    }
+  });
+
+  // Handle \( ... \)
+  processed = processed.replace(/\\\((.*?)\\\)/g, (match, math) => {
+    try {
+      return katex.renderToString(math, { displayMode: false, throwOnError: false });
+    } catch (e) {
+      console.error("KaTeX error in \\(...\\):", e);
+      return match;
+    }
+  });
+
+  // Handle \[ ... \]
+  processed = processed.replace(/\\\[(.*?)\\\]/gs, (match, math) => {
+    try {
+      return katex.renderToString(math, { displayMode: true, throwOnError: false });
+    } catch (e) {
+      console.error("KaTeX error in \\[...\\]:", e);
+      return match;
+    }
+  });
+
+  // ✅ return as React-safe HTML
+  return <span dangerouslySetInnerHTML={{ __html: processed }} />;
 };
 
 
-const stripHtml = (html) => {
-  if (html == null) return "";
-  const str = String(html);
-  return str.replace(/<\/?[^>]+(>|$)/g, "").trim();
-};
 
 // Helper function to render images with custom styles
 const renderImages = (imageArray, altPrefix = "Image") => {
@@ -864,7 +261,7 @@ export const QuestionsDisplay = ({
                       mb: option.optionUrl?.length > 0 ? 1 : 0
                     }}
                   >
-                    {String.fromCharCode(65 + idx)}. {renderTextWithLatex(stripHtml(option.text))}
+                    {String.fromCharCode(65 + idx)}. {renderTextWithLatex((option.text))}
                     {option.isCorrect && ' ✓'}
                   </Typography>
                   {renderImages(option.optionUrl, `Option ${String.fromCharCode(65 + idx)}`)}
@@ -932,7 +329,7 @@ export const QuestionsDisplay = ({
                   color: 'success.dark'
                 }}
               >
-                Answer: {renderTextWithLatex(String(stripHtml(question.correctAnswer)))} 
+                Answer: {renderTextWithLatex(String((question.correctAnswer)))} 
               </Typography>
             </Box>
           </Box>
@@ -955,7 +352,7 @@ export const QuestionsDisplay = ({
                     color: 'success.dark'
                   }}
                 >
-                 {renderTextWithLatex(stripHtml(blank.correctAnswer))} 
+                 {renderTextWithLatex((blank.correctAnswer))} 
                 </Typography>
               </Box>
             ))}
@@ -977,14 +374,14 @@ export const QuestionsDisplay = ({
                   Passage:
                 </Typography>
                 <Typography variant="body2" sx={{ lineHeight: 1.6 }}>
-                  {renderTextWithLatex(stripHtml(question.passage))}
+                  {renderTextWithLatex((question.passage))}
                 </Typography>
               </Box>
             )}
             {question.subQuestions?.map((subQ, idx) => (
               <Box key={subQ._id || idx} sx={{ mb: 2, pl: 2, borderLeft: '3px solid', borderColor: 'primary.main' }}>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Sub-question {idx + 1}: {renderTextWithLatex(stripHtml(subQ.questionText))}
+                  Sub-question {idx + 1}: {renderTextWithLatex((subQ.questionText))}
                 </Typography>
                 {subQ.type === 'mcq' && subQ.options?.map((option, optIdx) => (
                   <Box 
@@ -1006,7 +403,7 @@ export const QuestionsDisplay = ({
                         color: option.isCorrect ? 'success.dark' : 'text.secondary'
                       }}
                     >
-                      {String.fromCharCode(65 + optIdx)}. {renderTextWithLatex(stripHtml(option.text))}
+                      {String.fromCharCode(65 + optIdx)}. {renderTextWithLatex((option.text))}
                       {option.isCorrect && ' ✓'}
                     </Typography>
                   </Box>
@@ -1065,7 +462,7 @@ export const QuestionsDisplay = ({
                   <SolutionStep key={index}>
                     <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
                       <Typography variant="body1" sx={{ color: '#333', lineHeight: 1.6, flex: 1 }}>
-                        {renderTextWithLatex(stripHtml(trimmedLine))}
+                        {renderTextWithLatex((trimmedLine))}
                       </Typography>
                     </Box>
                   </SolutionStep>
@@ -1076,7 +473,7 @@ export const QuestionsDisplay = ({
                 <SolutionStep key={index}>
                   <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
                     <Typography variant="body1" sx={{ color: '#333', lineHeight: 1.6, flex: 1 }}>
-                      {renderTextWithLatex(stripHtml(step))}
+                      {renderTextWithLatex((step))}
                     </Typography>
                   </Box>
                 </SolutionStep>
@@ -1158,7 +555,7 @@ export const QuestionsDisplay = ({
                         Q{question.number || 1}:
                       </Box>
                       <Box sx={{ fontSize: '1.1rem', fontWeight: 400, color: '#333', position: 'relative', top: '-3px' }}>
-                        {renderTextWithLatex(stripHtml(question.questionText))}
+                        {renderTextWithLatex((question.questionText))}
                       </Box>
                     </Box>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
