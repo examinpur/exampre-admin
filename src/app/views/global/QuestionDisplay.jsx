@@ -6,6 +6,15 @@ import katex from "katex"
 import 'katex/dist/katex.min.css';
 import { Add, Delete, Edit, Quiz, School as SchoolIcon, Book as BookIcon, Topic as TopicIcon, Schedule as ScheduleIcon, Star as StarIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { MathJax, MathJaxContext } from "better-react-mathjax";
+
+
+const mathJaxConfig = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+  },
+};
 
 
 const katexGlobalStyles = (
@@ -118,63 +127,19 @@ const AddSolutionButton = styled(Button)(({ theme }) => ({
 
 export const renderTextWithLatex = (html) => {
   if (!html) return null;
-  let processed = html;
 
-  // Handle <span class="math-tex"> ... </span>
-  processed = processed.replace(/<span[^>]*class=["']math-tex["'][^>]*>(.*?)<\/span>/g, (match, math) => {
-    try {
-      // remove escaped backslashes \\( ... \\)
-      const cleanMath = math.replace(/^\\\(|\\\)$/g, "").replace(/^\\\[|\\\]$/g, "");
-      return katex.renderToString(cleanMath, { displayMode: false, throwOnError: false });
-    } catch (e) {
-      console.error("KaTeX error in span:", e);
-      return match;
-    }
-  });
+  // Strip unsafe tags but keep math delimiters + plain text
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  const safeText = tmp.textContent || tmp.innerText || "";
 
-  // Handle display math $$...$$
-  processed = processed.replace(/\$\$(.*?)\$\$/gs, (match, math) => {
-    try {
-      return katex.renderToString(math, { displayMode: true, throwOnError: false });
-    } catch (e) {
-      console.error("KaTeX error in $$:", e);
-      return match;
-    }
-  });
-
-  // Handle inline math $...$
-  processed = processed.replace(/\$(.*?)\$/g, (match, math) => {
-    try {
-      return katex.renderToString(math, { displayMode: false, throwOnError: false });
-    } catch (e) {
-      console.error("KaTeX error in $:", e);
-      return match;
-    }
-  });
-
-  // Handle \( ... \)
-  processed = processed.replace(/\\\((.*?)\\\)/g, (match, math) => {
-    try {
-      return katex.renderToString(math, { displayMode: false, throwOnError: false });
-    } catch (e) {
-      console.error("KaTeX error in \\(...\\):", e);
-      return match;
-    }
-  });
-
-  // Handle \[ ... \]
-  processed = processed.replace(/\\\[(.*?)\\\]/gs, (match, math) => {
-    try {
-      return katex.renderToString(math, { displayMode: true, throwOnError: false });
-    } catch (e) {
-      console.error("KaTeX error in \\[...\\]:", e);
-      return match;
-    }
-  });
-
-  // ✅ return as React-safe HTML
-  return <span dangerouslySetInnerHTML={{ __html: processed }} />;
+  return (
+    <MathJax dynamic>
+      {safeText}
+    </MathJax>
+  );
 };
+
 
 
 
@@ -541,6 +506,7 @@ export const QuestionsDisplay = ({
   }
 
   return (
+     <MathJaxContext version={3} config={mathJaxConfig}>
     <Box>
       {katexGlobalStyles}
       <QuestionsContainer>
@@ -654,6 +620,7 @@ export const QuestionsDisplay = ({
         </QuestionCard>
       </QuestionsContainer>
     </Box>
+    </MathJaxContext>
   );
 };
 

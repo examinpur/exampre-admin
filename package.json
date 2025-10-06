@@ -41,6 +41,7 @@
     "ajv-keywords": "^3.5.2",
     "autosuggest-highlight": "^3.3.4",
     "axios": "^1.6.7",
+    "better-react-mathjax": "^2.3.0",
     "clsx": "^2.1.0",
     "date-fns": "^2.30.0",
     "dayjs": "^1.11.13",
