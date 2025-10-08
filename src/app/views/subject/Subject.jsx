@@ -167,7 +167,7 @@ export const Subject = () => {
              <TableCell>
               <Box>
                 <Typography variant="body2" color="text.secondary">
-                  {subject.classId.class}
+                  {subject?.classId?.class}
                 </Typography>
               </Box>
             </TableCell>

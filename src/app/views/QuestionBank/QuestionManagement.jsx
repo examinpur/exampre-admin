@@ -1,45 +1,45 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { 
-  Box, 
-  Paper, 
-  List, 
-  Button, 
-  ListItemButton, 
-  Typography, 
-  CircularProgress, 
-  TextField,
-  FormControl, 
-  InputLabel, 
-  Select, 
-  MenuItem,
-  Grid,
-  Chip,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Collapse,
-  Tooltip,
-  IconButton
-} from '@mui/material';
-import { styled } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
-import QuizIcon from '@mui/icons-material/Quiz';
+import ClearIcon from '@mui/icons-material/Clear';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import ClearIcon from '@mui/icons-material/Clear';
-import QuestionsDisplay from '../global/QuestionDisplay';
-import Swal from 'sweetalert2';
-import axios from 'axios';
+import QuizIcon from '@mui/icons-material/Quiz';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Button,
+  Chip,
+  CircularProgress,
+  Collapse,
+  FormControl,
+  Grid,
+  IconButton,
+  InputLabel,
+  List,
+  ListItemButton,
+  MenuItem,
+  Paper,
+  Select,
+  TextField,
+  Tooltip,
+  Typography
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { BASE_URL } from 'app/config/config';
+import axios from 'axios';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { TrueFalseQuestionDialog } from '../QuestionDialogBox/TrueFalseDialogBox';
-import { MCQQuestionDialog } from '../QuestionDialogBox/MCQDialogBox';
+import Swal from 'sweetalert2';
+import QuestionsDisplay from '../global/QuestionDisplay';
+import ComprehensiveQuestionDialog from '../QuestionDialogBox/ComprehensiveQuestionDialog';
 import { FillInTheBlankQuestionDialog } from '../QuestionDialogBox/FillInTheBlankQuestionDialog';
 import { IntegerQuestionDialog } from '../QuestionDialogBox/IntegerDialogBox';
-import ComprehensiveQuestionDialog from '../QuestionDialogBox/ComprehensiveQuestionDialog';
+import { MCQQuestionDialog } from '../QuestionDialogBox/MCQDialogBox';
+import { TrueFalseQuestionDialog } from '../QuestionDialogBox/TrueFalseDialogBox';
 import { UploadDocDialog } from '../QuestionDialogBox/UploadDocDialog';
 import { UploadJsonDialog } from '../QuestionDialogBox/UploadJsonDialogBox';
-import { ChevronLeft, ChevronRight, Upload } from 'lucide-react';
 
 const StyledButton = styled(Button)(({ theme }) => ({
   margin: theme.spacing(0.5),
@@ -136,9 +136,9 @@ const LoadingContainer = styled(Box)(({ theme }) => ({
 }));
 
 const FilterContainer = styled(Box)(({ theme }) => ({
-  mb: 3, 
-  backgroundColor: 'background.paper', 
-  borderRadius: theme.shape.borderRadius, 
+  mb: 3,
+  backgroundColor: 'background.paper',
+  borderRadius: theme.shape.borderRadius,
   boxShadow: theme.shadows[2],
   overflow: 'hidden'
 }));
@@ -219,7 +219,7 @@ export const QuestionManagement = ({ data, fetchData }) => {
         const subject = question.subject?.subject?.toLowerCase() || '';
         const chapter = question.chapterName?.chapterName?.toLowerCase() || '';
         const topic = question.topic?.topic?.toLowerCase() || '';
-        
+
         return questionText.includes(searchLower) ||
                subject.includes(searchLower) ||
                chapter.includes(searchLower) ||
@@ -265,7 +265,7 @@ export const QuestionManagement = ({ data, fetchData }) => {
     // Apply previous years filter
     if (filterPreviousYears !== '') {
       const isPreviousYears = filterPreviousYears === 'true';
-      filtered = filtered.filter(question => 
+      filtered = filtered.filter(question =>
         Boolean(question.previousYearsQuestion) === isPreviousYears
       );
     }
@@ -282,8 +282,8 @@ export const QuestionManagement = ({ data, fetchData }) => {
       setSelectedQuestion(filtered.length > 0 ? filtered[0] : null);
     }
   }, [
-    originalData, searchText, filterType, filterClass, filterCourse, 
-    filterSubject, filterChapter, filterTopic, filterResource, 
+    originalData, searchText, filterType, filterClass, filterCourse,
+    filterSubject, filterChapter, filterTopic, filterResource,
     filterPreviousYears, filterDifficulty, selectedQuestion
   ]);
 
@@ -624,15 +624,15 @@ export const QuestionManagement = ({ data, fetchData }) => {
       </ButtonContainer>
 
       <FilterContainer>
-        <Accordion 
-          expanded={filterExpanded} 
+        <Accordion
+          expanded={filterExpanded}
           onChange={(event, isExpanded) => setFilterExpanded(isExpanded)}
           elevation={0}
         >
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
-            sx={{ 
-              backgroundColor: 'primary.main', 
+            sx={{
+              backgroundColor: 'primary.main',
               color: 'white',
               '& .MuiAccordionSummary-content': {
                 alignItems: 'center'
@@ -643,9 +643,9 @@ export const QuestionManagement = ({ data, fetchData }) => {
             <Typography variant="h6" sx={{ fontWeight: 600 }}>
               Filter & Search Questions
               {getActiveFiltersCount() > 0 && (
-                <Chip 
-                  label={`${getActiveFiltersCount()} active`} 
-                  size="small" 
+                <Chip
+                  label={`${getActiveFiltersCount()} active`}
+                  size="small"
                   sx={{ ml: 2, backgroundColor: 'rgba(255,255,255,0.2)', color: 'white' }}
                 />
               )}
@@ -836,8 +836,8 @@ export const QuestionManagement = ({ data, fetchData }) => {
             </Grid>
 
             <Box sx={{ mt: 3, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-              <Button 
-                variant="outlined" 
+              <Button
+                variant="outlined"
                 onClick={resetFilters}
                 startIcon={<ClearIcon />}
                 size="small"
@@ -853,20 +853,20 @@ export const QuestionManagement = ({ data, fetchData }) => {
       </FilterContainer>
 
   <MainContainer>
-    <LeftPanel 
-      elevation={3} 
-      sx={{ 
+    <LeftPanel
+      elevation={3}
+      sx={{
         width: isLeftPanelCollapsed ? '60px' : '400px', // Adjust width as needed
         transition: 'width 0.3s ease-in-out',
         minWidth: isLeftPanelCollapsed ? '60px' : '350px'
       }}
     >
       {/* Header with Toggle Button */}
-      <Box sx={{ 
-        p: 2, 
-        borderBottom: 1, 
-        borderColor: 'divider', 
-        background: 'linear-gradient(135deg, #848485FF 0%, #DCCEEAFF 100%)', 
+      <Box sx={{
+        p: 2,
+        borderBottom: 1,
+        borderColor: 'divider',
+        background: 'linear-gradient(135deg, #848485FF 0%, #DCCEEAFF 100%)',
         color: 'white',
         display: 'flex',
         alignItems: 'center',
@@ -877,11 +877,11 @@ export const QuestionManagement = ({ data, fetchData }) => {
             Questions ({filteredData.length})
           </Typography>
         </Collapse>
-        
+
         <Tooltip title={isLeftPanelCollapsed ? "Expand panel" : "Collapse panel"}>
-          <IconButton 
+          <IconButton
             onClick={handleToggleLeftPanel}
-            sx={{ 
+            sx={{
               color: 'white',
               ml: isLeftPanelCollapsed ? 0 : 1
             }}
@@ -920,16 +920,16 @@ export const QuestionManagement = ({ data, fetchData }) => {
             >
               {isLeftPanelCollapsed ? (
                 // Collapsed view - only show question number
-                <Box sx={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
+                <Box sx={{
+                  display: 'flex',
+                  alignItems: 'center',
                   justifyContent: 'center',
                   width: '100%'
                 }}>
-                  <Typography 
-                    variant="body2" 
-                    fontWeight={800} 
-                    color="text.secondary" 
+                  <Typography
+                    variant="body2"
+                    fontWeight={800}
+                    color="text.secondary"
                     fontSize={14}
                   >
                     {question.number || index + 1}
@@ -943,10 +943,10 @@ export const QuestionManagement = ({ data, fetchData }) => {
                     <Typography variant="body2" fontWeight={800} color="text.secondary" fontSize={16}>
                       # {question.number || index + 1}
                     </Typography>
-                    <Chip 
-                      label={getQuestionTypeDisplay(question.type)} 
-                      size="small" 
-                      color="primary" 
+                    <Chip
+                      label={getQuestionTypeDisplay(question.type)}
+                      size="small"
+                      color="primary"
                       variant="outlined"
                     />
                   </Box>
@@ -954,30 +954,30 @@ export const QuestionManagement = ({ data, fetchData }) => {
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                     {/* Subject, Chapter, Topic */}
                     <Typography variant="caption" color="text.secondary">
-                      <strong>Subject:</strong> {question.subject?.subject || 'N/A'} | 
-                      <strong> Chapter:</strong> {question.chapterName?.chapterName || 'N/A'} | 
+                      <strong>Subject:</strong> {question.subject?.subject || 'N/A'} |
+                      <strong> Chapter:</strong> {question.chapterName?.chapterName || 'N/A'} |
                       <strong> Topic:</strong> {question.topic?.topic || 'N/A'}
                     </Typography>
 
                     {/* Class, Course */}
                     <Typography variant="caption" color="text.secondary">
-                      <strong>Class:</strong> {question.class?.class || 'N/A'} | 
+                      <strong>Class:</strong> {question.class?.class || 'N/A'} |
                       <strong> Course:</strong> {question.course?.course || 'N/A'}
                     </Typography>
 
                     {/* Resource, Difficulty */}
                     <Typography variant="caption" color="text.secondary">
-                      <strong>Resource:</strong> {question.resource || 'N/A'} | 
+                      <strong>Resource:</strong> {question.resource || 'N/A'} |
                       <strong> Difficulty:</strong> {question.difficultyLevel || 'N/A'}
                     </Typography>
 
                     {/* Previous Years Badge */}
                     {question.previousYearsQuestion && (
                       <Box sx={{ mt: 0.5 }}>
-                        <Chip 
-                          label="Previous Years" 
-                          size="small" 
-                          color="secondary" 
+                        <Chip
+                          label="Previous Years"
+                          size="small"
+                          color="secondary"
                           variant="filled"
                           sx={{ fontSize: '0.7rem', height: '18px' }}
                         />
@@ -991,11 +991,11 @@ export const QuestionManagement = ({ data, fetchData }) => {
         </QuestionsList>
       )}
     </LeftPanel>
-    
+
     <RightPanel elevation={3}>
       <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider', background: 'linear-gradient(135deg, #848485FF 0%, #DCCEEAFF 100%)', color: 'white' }}>
         <Typography variant="h6" fontWeight={600}>
-          Question Detailssss
+          Question Details
         </Typography>
       </Box>
 
@@ -1013,7 +1013,7 @@ export const QuestionManagement = ({ data, fetchData }) => {
             isImporting={false}
             fetchData = {fetchData}
             solution={solution}
-            onDeleteSolution={onDeleteSolution} 
+            onDeleteSolution={onDeleteSolution}
           />
         ) : (
           <EmptyState>
@@ -1037,7 +1037,7 @@ export const QuestionManagement = ({ data, fetchData }) => {
           comprehensive={false}
         />
       )}
-      
+
       {openMCQDialog && (
         <MCQQuestionDialog
           open={openMCQDialog}
@@ -1047,7 +1047,7 @@ export const QuestionManagement = ({ data, fetchData }) => {
           comprehensive={false}
         />
       )}
-      
+
       {openFillInTheBlankDialog && (
         <FillInTheBlankQuestionDialog
           open={openFillInTheBlankDialog}
@@ -1057,7 +1057,7 @@ export const QuestionManagement = ({ data, fetchData }) => {
           comprehensive={false}
         />
       )}
-      
+
       {openIntegerDialog && (
         <IntegerQuestionDialog
           open={openIntegerDialog}
@@ -1067,7 +1067,7 @@ export const QuestionManagement = ({ data, fetchData }) => {
           comprehensive={false}
         />
       )}
-      
+
       {openComprehensiveDialog && (
         <ComprehensiveQuestionDialog
           open={openComprehensiveDialog}
@@ -1077,7 +1077,7 @@ export const QuestionManagement = ({ data, fetchData }) => {
           comprehensive={false}
         />
       )}
-      
+
       {isUploadDocDialogOpen && (
         <UploadDocDialog
           open={isUploadDocDialogOpen}

@@ -1,29 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Typography,
-  IconButton,
-  Divider,
-  CircularProgress,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-} from '@mui/material';
+import styled from '@emotion/styled';
 import {
   Close as CloseIcon,
   CloudUpload as CloudUploadIcon,
 } from '@mui/icons-material';
-import styled from '@emotion/styled';
-import Swal from 'sweetalert2';
-import axios from 'axios';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+} from '@mui/material';
 import { BASE_URL } from 'app/config/config';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const StyledDialogTitle = styled(DialogTitle)(({ theme }) => ({
   display: 'flex',
@@ -200,7 +200,7 @@ export const UploadJsonDialog = ({ open, onClose, onUploadSuccess, sectionIds , 
   };
 
   const handleUpload = async () => {
-    if (!selectedJsonFile || !selectedZipFile) {
+    if (!selectedJsonFile && !selectedZipFile) {
       Swal.fire({
         icon: 'warning',
         title: 'Files Missing',
@@ -395,7 +395,8 @@ export const UploadJsonDialog = ({ open, onClose, onUploadSuccess, sectionIds , 
           onClick={handleUpload}
           variant="contained"
           color="primary"
-          disabled={!selectedJsonFile || !selectedZipFile || loading}
+          disabled={(!selectedJsonFile && !selectedZipFile) || loading}
+          // disabled={!selectedJsonFile || loading}
           startIcon={loading ? <CircularProgress size={20} color="inherit" /> : null}
         >
           {loading ? 'Uploading...' : 'Upload'}

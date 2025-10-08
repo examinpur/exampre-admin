@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
-import {Box, Button, Table,CircularProgress, Typography, Fab , TableContainer,IconButton,Paper,TableHead,TableRow,TableCell,TableBody} from '@mui/material';
-import { Breadcrumb, SimpleCard } from 'app/components';
-import React, { useState, useEffect } from 'react';
+import { Delete, Edit } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
-import { Edit, Delete } from '@mui/icons-material';
-import axios from 'axios';
+import { Box, Button, CircularProgress, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
+import { Breadcrumb, SimpleCard } from 'app/components';
 import { BASE_URL } from 'app/config/config';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { CreateTopicDialog } from './CreateTopic';
 
@@ -64,7 +64,7 @@ export const Topic = () => {
     setEditData(null);
     setDialogOpen(true);
   };
-  
+
   const handleOpenDialogedit = (topic = null) => {
     setEditData(topic);
     setDialogOpen(true);
@@ -93,14 +93,14 @@ export const Topic = () => {
     if (result.isConfirmed) {
       try {
         await axios.delete(`${BASE_URL}/api/topic/${topic._id}`);
-        
+
         Swal.fire({
           icon: 'success',
           title: 'Deleted!',
           text: 'Topic has been deleted successfully.',
           confirmButtonColor: '#3085d6'
         });
-        
+
         fetchTopics(); // Refresh the list
       } catch (error) {
         console.error('Error deleting topic:', error);
@@ -193,7 +193,7 @@ export const Topic = () => {
                       <TableCell>
                         <Box>
                           <Typography variant="body2" color="text.secondary">
-                            {topic.subjectId?.classId.class || 'N/A'}
+                            {topic?.subjectId?.classId?.class || 'N/A'}
                           </Typography>
                         </Box>
                       </TableCell>

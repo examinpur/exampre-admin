@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
-import {Box, Button, Table,CircularProgress, Typography, Fab , TableContainer,IconButton,Paper,TableHead,TableRow,TableCell,TableBody} from '@mui/material';
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { BASE_URL } from 'app/config/config';
-import Swal from 'sweetalert2';
 import { Add, Delete, Edit } from '@mui/icons-material';
+import { Box, Button, CircularProgress, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import { Breadcrumb, SimpleCard } from 'app/components';
+import { BASE_URL } from 'app/config/config';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
 import { CreateChapterDialog } from './CreateChapterName';
 
 const StyledButton = styled(Button)(({ theme }) => ({
@@ -91,14 +91,14 @@ export const ChapterName = () => {
     if (result.isConfirmed) {
       try {
         await axios.delete(`${BASE_URL}/api/chapter/${subject._id}`);
-        
+
         Swal.fire({
           icon: 'success',
           title: 'Deleted!',
           text: 'Chapter has been deleted successfully.',
           confirmButtonColor: '#3085d6'
         });
-        
+
         fetchChapters(); // Refresh the list
       } catch (error) {
         console.error('Error deleting Chapter:', error);
@@ -143,7 +143,7 @@ export const ChapterName = () => {
           </StyledButton>
         </Box>
         <Box>
-          {loading ? ( <CircularProgress />) : ( 
+          {loading ? ( <CircularProgress />) : (
             <StyledTable>
       <TableHead>
        <TableRow>
@@ -173,7 +173,7 @@ export const ChapterName = () => {
              <TableCell>
               <Box>
                 <Typography variant="body2" color="text.secondary">
-                  {chapter.subjectId.classId.class}
+                  {chapter?.subjectId?.classId?.class}
                 </Typography>
               </Box>
             </TableCell>
